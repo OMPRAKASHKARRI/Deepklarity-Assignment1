@@ -10,12 +10,15 @@ backend/**/__pycache__/
 backend/*.pyc
 backend/quiz.db
 backend/app/__pycache__/
+backend/.env
 
 # Frontend
 frontend/node_modules/
 frontend/dist/
 frontend/.env
 frontend/.env.local
+frontend_new/node_modules/
+frontend_new/dist/
 
 # IDE
 .vscode/
@@ -46,3 +49,4 @@ build/
 *.tmp
 *.temp
 *.bak
+CLEANUP_REPORT.md
