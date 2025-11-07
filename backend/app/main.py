@@ -32,11 +32,6 @@ def startup_event():
     Base.metadata.create_all(bind=engine)
 
 
-@app.get("/")
-def read_root():
-    return {"message": "Backend is running successfully!"}
-
-
 @app.post("/generate_quiz/")
 def generate_quiz_api(request: QuizRequest) -> Dict[str, Any]:
     import random
@@ -134,12 +129,16 @@ def get_quiz(quiz_id: int):
 
 
 # Serve React frontend static files
-# Try both paths: local dev (backend/static) and Docker (/app/backend/static)
-static_dir = None
-if os.path.exists("backend/static"):
-    static_dir = "backend/static"
-elif os.path.exists("/app/backend/static"):
-    static_dir = "/app/backend/static"
+import logging
+logger = logging.getLogger(__name__)
 
-if static_dir:
+static_dir = "backend/static"  # In Docker, working dir is /app, so backend/static is /app/backend/static
+
+# Debug: Check if static directory exists
+if os.path.exists(static_dir):
+    logger.info(f"✅ Static files found at: {static_dir}")
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+else:
+    logger.warning(f"⚠️ Static files NOT found at: {static_dir}")
+    logger.warning(f"Current working directory: {os.getcwd()}")
+    logger.warning(f"Contents of /app: {os.listdir('/app') if os.path.exists('/app') else 'N/A'}")
