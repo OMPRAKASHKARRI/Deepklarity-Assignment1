@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-// API base URL - works on both localhost and production
-const API_BASE = window.location.origin
-
 export default function HistoryTab() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -13,7 +10,8 @@ export default function HistoryTab() {
   async function fetchList() {
     setLoading(true)
     try {
-      const res = await fetch(`${API_BASE}/history`)
+      // ✅ Correct backend call via Vite proxy
+      const res = await fetch(`/api/history`)
       if (!res.ok) throw new Error('Failed to fetch')
       const data = await res.json()
       setItems(data)
@@ -26,14 +24,18 @@ export default function HistoryTab() {
 
   async function showDetails(id) {
     try {
-      const res = await fetch(`${API_BASE}/quiz/${id}`)
+      // ✅ Correct backend call via Vite proxy
+      const res = await fetch(`/api/quiz/${id}`)
       const data = await res.json()
       setSelected(data)
-    } catch (e) { console.error(e) }
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
     <div style={{ display: 'grid', gap: '1.5rem' }}>
+      
       {/* Loading State */}
       {loading && (
         <div className="loading-container">
@@ -44,9 +46,19 @@ export default function HistoryTab() {
 
       {/* Empty State */}
       {!loading && items.length === 0 && (
-        <div style={{ background: '#dbeafe', border: '1px solid #93c5fd', borderRadius: '0.75rem', padding: '3rem 2rem', textAlign: 'center' }}>
-          <p style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1f2937', marginBottom: '0.5rem' }}>No quizzes generated yet</p>
-          <p style={{ fontSize: '0.95rem', color: '#6b7280' }}>Go to the Generate Quiz tab to create your first quiz</p>
+        <div style={{ 
+          background: '#dbeafe', 
+          border: '1px solid #93c5fd', 
+          borderRadius: '0.75rem', 
+          padding: '3rem 2rem', 
+          textAlign: 'center' 
+        }}>
+          <p style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1f2937', marginBottom: '0.5rem' }}>
+            No quizzes generated yet
+          </p>
+          <p style={{ fontSize: '0.95rem', color: '#6b7280' }}>
+            Go to the Generate Quiz tab to create your first quiz
+          </p>
         </div>
       )}
 
@@ -64,23 +76,45 @@ export default function HistoryTab() {
               </tr>
             </thead>
             <tbody>
-              {items.map((it, idx) => (
+              {items.map((it) => (
                 <tr key={it.id}>
                   <td>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '2rem', height: '2rem', background: '#dbeafe', color: '#1e40af', borderRadius: '50%', fontWeight: '700', fontSize: '0.875rem' }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '2rem',
+                      height: '2rem',
+                      background: '#dbeafe',
+                      color: '#1e40af',
+                      borderRadius: '50%',
+                      fontWeight: '700',
+                      fontSize: '0.875rem'
+                    }}>
                       {it.id}
                     </span>
                   </td>
+
                   <td style={{ fontWeight: '500' }}>{it.title}</td>
+
                   <td style={{ fontSize: '0.95rem' }}>
                     {new Date(it.date_generated).toLocaleDateString()} <br />
-                    <span style={{ fontSize: '0.8rem', color: '#9ca3af' }}>{new Date(it.date_generated).toLocaleTimeString()}</span>
+                    <span style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
+                      {new Date(it.date_generated).toLocaleTimeString()}
+                    </span>
                   </td>
+
                   <td style={{ fontSize: '0.95rem', wordBreak: 'break-all' }}>
-                    <a href={it.url} target="_blank" rel="noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
+                    <a 
+                      href={it.url} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      style={{ color: '#3b82f6', textDecoration: 'none' }}
+                    >
                       {it.url.replace('https://en.wikipedia.org/wiki/', '')}
                     </a>
                   </td>
+
                   <td style={{ textAlign: 'center' }}>
                     <button
                       onClick={() => showDetails(it.id)}
@@ -100,6 +134,7 @@ export default function HistoryTab() {
       {selected && (
         <div className="modal-overlay">
           <div className="modal">
+
             {/* Modal Header */}
             <div className="modal-header">
               <h2 className="modal-title">{selected.title}</h2>
@@ -113,9 +148,10 @@ export default function HistoryTab() {
 
             {/* Modal Body */}
             <div className="modal-body">
+              
               <div className="modal-section">
                 <div className="modal-section-label">URL</div>
-                <a
+                <a 
                   href={selected.url}
                   target="_blank"
                   rel="noreferrer"
@@ -143,9 +179,10 @@ export default function HistoryTab() {
                   </pre>
                 </div>
               )}
+
             </div>
 
-            {/* Modal Footer */}
+            {/* Footer */}
             <div className="modal-footer">
               <button
                 onClick={() => setSelected(null)}
@@ -154,10 +191,10 @@ export default function HistoryTab() {
                 Close
               </button>
             </div>
+
           </div>
         </div>
       )}
     </div>
   )
 }
-

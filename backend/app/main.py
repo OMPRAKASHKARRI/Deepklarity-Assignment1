@@ -21,16 +21,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class QuizRequest(BaseModel):
     url: str
-
 
 @app.on_event("startup")
 def startup_event():
     # create DB tables
     Base.metadata.create_all(bind=engine)
-
 
 @app.post("/generate_quiz/")
 def generate_quiz_api(request: QuizRequest) -> Dict[str, Any]:
@@ -93,7 +90,6 @@ def generate_quiz_api(request: QuizRequest) -> Dict[str, Any]:
         "related_topics": scraped.get("sections", []),
     }
 
-
 @app.get("/history")
 def list_history():
     db = SessionLocal()
@@ -111,7 +107,6 @@ def list_history():
     finally:
         db.close()
 
-
 @app.get("/quiz/{quiz_id}")
 def get_quiz(quiz_id: int):
     db = SessionLocal()
@@ -123,22 +118,17 @@ def get_quiz(quiz_id: int):
             data = json.loads(it.full_quiz_data) if it.full_quiz_data else {}
         except Exception:
             data = {"quiz": [], "related_topics": []}
-        return {"id": it.id, "url": it.url, "title": it.title, "summary": it.summary, "full_quiz_data": data}
+        return {
+            "id": it.id,
+            "url": it.url,
+            "title": it.title,
+            "summary": it.summary,
+            "full_quiz_data": data
+        }
     finally:
         db.close()
 
-
-# Serve React frontend static files
-import logging
-logger = logging.getLogger(__name__)
-
-static_dir = "backend/static"  # In Docker, working dir is /app, so backend/static is /app/backend/static
-
-# Debug: Check if static directory exists
-if os.path.exists(static_dir):
-    logger.info(f"✅ Static files found at: {static_dir}")
-    app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
-else:
-    logger.warning(f"⚠️ Static files NOT found at: {static_dir}")
-    logger.warning(f"Current working directory: {os.getcwd()}")
-    logger.warning(f"Contents of /app: {os.listdir('/app') if os.path.exists('/app') else 'N/A'}")
+# ✅ Added SAFE FIX to prevent backend from crashing
+@app.get("/")
+def root():
+    return {"message": "Backend is running"}
