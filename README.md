@@ -1,6 +1,17 @@
 # DeepKlarity - AI-Powered Quiz Generator
 
 A powerful quiz generation system that scrapes Wikipedia articles and generates intelligent multiple-choice quizzes with visual feedback.
+### Screenshots
+### Quiz Generation Page
+<img width="1826" height="851" alt="Screenshot 2025-11-09 103751" src="https://github.com/user-attachments/assets/86130e5a-9a93-4f76-8364-7182fd5456fb" />
+<img width="1495" height="652" alt="Screenshot 2025-11-09 103816" src="https://github.com/user-attachments/assets/b6971528-f04a-4f3b-bd13-9dab236fcdf7" />
+### Quiz History Page
+<img width="1753" height="828" alt="Screenshot 2025-11-09 103458" src="https://github.com/user-attachments/assets/ab92730f-f03d-472e-a8a1-257886978a27" />
+
+### Detail Modal Page
+<img width="932" height="540" alt="image" src="https://github.com/user-attachments/assets/7b006579-4504-4521-98ee-de58a8e91933" />
+
+
 
 ## 🎯 Features
 
@@ -365,3 +376,4 @@ Ready to generate quizzes?
 **Status**: ✅ Production Ready
 
 Enjoy learning with DeepKlarity! 🎓
+
